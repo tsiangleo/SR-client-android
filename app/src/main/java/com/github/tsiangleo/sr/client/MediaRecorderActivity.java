@@ -12,7 +12,7 @@ import android.widget.Toast;
 import java.io.File;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MediaRecorderActivity extends AppCompatActivity implements View.OnClickListener {
 
     private File audioFile;
     private Button btnStart,btnStop,btnPlay;
@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_media_recorder);
 
         btnStart = (Button) findViewById(R.id.btn_start);
         btnStop = (Button) findViewById(R.id.btn_stop);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mediaPlayer.start();
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(MainActivity.this,"播放录音出错:"+e.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(MediaRecorderActivity.this,"播放录音出错:"+e.getMessage(),Toast.LENGTH_SHORT).show();
             }
         }
     }
