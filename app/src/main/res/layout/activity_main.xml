@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="com.github.tsiangleo.sr.client.MediaRecorderActivity">
+    tools:context="com.github.tsiangleo.sr.client.MainActivity">
 
     <TextView
         android:id="@+id/tv_hint"
