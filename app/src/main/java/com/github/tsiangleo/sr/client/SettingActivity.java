@@ -1,5 +1,6 @@
 package com.github.tsiangleo.sr.client;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +17,12 @@ import java.net.Socket;
  */
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener{
+
+    public final static String EXTRA_MESSAGE_HOST = "com.github.tsiangleo.sr.client.server.addr";
+    public final static String EXTRA_MESSAGE_PORT = "com.github.tsiangleo.sr.client.server.port";
+
     private EditText hostEditText;
     private EditText portEditText;
-    private EditText frequencyEditText;
 
     private Button nextButton;
 
@@ -32,7 +36,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         hostEditText = (EditText) findViewById(R.id.hostEditText);
         portEditText = (EditText) findViewById(R.id.portEditText);
-        frequencyEditText = (EditText) findViewById(R.id.frequencyEditText);
 
         nextButton = (Button) findViewById(R.id.nextButton);
 
@@ -43,7 +46,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         if (v == nextButton){
-            Toast.makeText(this,"连接...",Toast.LENGTH_SHORT).show();
 
             if(hostEditText.getText().toString().isEmpty()){
                 Toast.makeText(this,"服务器地址不能为空",Toast.LENGTH_SHORT).show();
@@ -89,9 +91,20 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         protected void onPostExecute(Boolean result) {
             if (result) {
                 Toast.makeText(SettingActivity.this, "连接到服务器成功", Toast.LENGTH_SHORT).show();
+                //到下一个Activity
+                gotoNextActivity();
+
             } else {
                 Toast.makeText(SettingActivity.this, "无法连接到服务器", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+    private void gotoNextActivity(){
+        Intent intent = new Intent(this,AudioRecorderActivity.class);
+        intent.putExtra(EXTRA_MESSAGE_HOST,host);
+        intent.putExtra(EXTRA_MESSAGE_PORT,port);
+        startActivity(intent);
+    }
+
 }

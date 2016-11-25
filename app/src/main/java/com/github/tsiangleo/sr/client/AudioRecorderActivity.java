@@ -1,5 +1,7 @@
 package com.github.tsiangleo.sr.client;
 
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,29 +72,25 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
     private String host;
     private int port;
 
-    private EditText hostEditText;
-    private EditText portEditText;
-    private Button connectButton;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_recorder);
 
         statusTextView = (TextView) findViewById(R.id.statusTextView);
-        hostEditText = (EditText) findViewById(R.id.hostEditText);
-        portEditText = (EditText) findViewById(R.id.portEditText);
-
         startButton = (Button) findViewById(R.id.startButton);
         stopButton = (Button) findViewById(R.id.stopButton);
-        connectButton = (Button) findViewById(R.id.connectButton);
 
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
-        connectButton.setOnClickListener(this);
 
         statusTextView.setVisibility(View.INVISIBLE);
-        stopButton.setEnabled(false);
+        stopButton.setVisibility(View.GONE);
+
+        Intent intent = getIntent();
+        host = intent.getStringExtra(SettingActivity.EXTRA_MESSAGE_HOST);
+        port = intent.getIntExtra(SettingActivity.EXTRA_MESSAGE_PORT,0);
+        Toast.makeText(this,"server address:"+host+":"+port,Toast.LENGTH_SHORT).show();
 
         File path = new File( Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/Android/data/com.github.tsiangleo.sr.client/files/");
@@ -110,30 +109,19 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
             record();
         }else if(v == stopButton){
             stopRecord();
-        }else if (v == connectButton){
-
-            if(hostEditText.getText().toString().isEmpty()){
-                Toast.makeText(this,"服务器地址不能为空",Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(portEditText.getText().toString().isEmpty()){
-                Toast.makeText(this,"服务器端口号不能为空",Toast.LENGTH_SHORT).show();
-                return;
-            }
-            new NetCheckTask().execute(hostEditText.getText().toString(),portEditText.getText().toString());
-            // TODO 进度条
         }
     }
 
     private void record() {
-        startButton.setEnabled(false);
-        stopButton.setEnabled(true);
+        startButton.setVisibility(View.GONE);
+        stopButton.setVisibility(View.VISIBLE);
         statusTextView.setVisibility(View.VISIBLE);
 
         recordTask = new RecordAudioTask();
         recordTask.execute();
-    }
 
+
+    }
     private void stopRecord() {
         isRecording = false;
     }
@@ -192,9 +180,11 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
         // 点击停止录音后由UI线程执行
         protected void onPostExecute(Void result) {
             statusTextView.setText("完成录音，文件是:"+recordingFile.getAbsolutePath());
-            stopButton.setEnabled(false);
-            //这里不能立即可以开始重新录音，得等到文件上传完才可以。
-            //startButton.setEnabled(true);
+            //停止按钮不可见
+            stopButton.setVisibility(View.GONE);
+            //开始按钮可见，但不出于enable状态，得等到文件上传完成后才能出于enable状态。
+            startButton.setVisibility(View.VISIBLE);
+            startButton.setEnabled(false);
 
             // 可以播放了、可以上传了,以下两个任务可以同时执行
             convert();
@@ -204,13 +194,10 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
 
     }
 
-    private class PlayAudioTask extends AsyncTask<Void, Integer, String> {
+    private class PlayAudioTask extends AsyncTask<Void, Long, String> {
 
         @Override
         protected String doInBackground(Void... params) {
-
-            short[] audiodata = new short[bufferSizeInBytes / 4];
-
             try {
                 DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(recordingFile)));
 
@@ -221,7 +208,9 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
 
                 audioTrack.play();
 
-                int count = 0;
+                short[] audiodata = new short[bufferSizeInBytes / 4];
+
+                long count = 0;
                 while (dis.available() > 0) {
                     int i = 0;
                     while (dis.available() > 0 && i < audiodata.length) {
@@ -230,8 +219,8 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
                     }
                     audioTrack.write(audiodata, 0, audiodata.length);
 
-                    publishProgress(new Integer(count));
-                    count++;
+                    count += i;
+                    publishProgress(new Long(count));
                 }
 
                 dis.close();
@@ -244,8 +233,13 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
             return null;
         }
 
-        protected void onProgressUpdate(Integer... progress) {
-            statusTextView.setText("正在播放录音:"+progress[0].toString());
+        protected void onProgressUpdate(Long... progress) {
+            long total = recordingFile.length() / 2;  //以short为单位，2个字节。
+
+            if(total != 0) {
+                int percent = (int)((progress[0] / (double)total) * 100);
+                statusTextView.setText("正在播放录音:"+percent+"%");
+            }
         }
 
         // 点击停止录音后由UI线程执行
@@ -259,7 +253,7 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
         }
     }
 
-    private class UploadAudioTask extends AsyncTask<Void, Integer, Integer> {
+    private class UploadAudioTask extends AsyncTask<Void, Long, Integer> {
 
         /**
          *
@@ -270,7 +264,7 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
         protected Integer doInBackground(Void... params) {
 
             try {
-                int count = 0;
+
                 if(host == null || port <= 0){
                     return 1;
                 }
@@ -285,15 +279,15 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
                 //2、发送文件名
                 os.write(filename.getBytes("utf-8"));
 
-
+                long count = 0;
                 byte[] b = new byte[1024];
                 int length;
                 while((length = fis.read(b)) > 0){
                     //2、把文件写入socket输出流
                     os.write(b, 0, length);
 
-                    publishProgress(new Integer(count));
-                    count++;
+                    count += length;
+                    publishProgress(new Long(count));
                 }
                 os.close();
                 fis.close();
@@ -304,8 +298,13 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
             }
             return 0;
         }
-        protected void onProgressUpdate(Integer... progress) {
-            statusTextView.setText("正在上传文件:"+progress[0].toString());
+        protected void onProgressUpdate(Long... progress) {
+            long total = wavFile.length();
+            if(total != 0) {
+                int percent = (int)((progress[0] / (double)total) * 100);
+                statusTextView.setText("正在上传文件:"+percent+"%");
+            }
+
         }
 
         // 点击停止录音后由UI线程执行
@@ -323,46 +322,6 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
             startButton.setEnabled(true);
         }
     }
-
-    private class NetCheckTask extends AsyncTask<String, Integer, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-            String h = params[0];
-            int p = Integer.parseInt(params[1]);
-
-            boolean isOk = true;
-            Socket s = null;
-            try {
-                s = new Socket(h, p);
-            } catch (Exception e) {
-                isOk = false;
-            }finally {
-                if(s != null){
-                    try {
-                        s.close();
-                    } catch (IOException e) {
-                    }
-                }
-                if(isOk){
-                    host = h;
-                    port = p;
-                }
-            }
-            return isOk;
-        }
-        protected void onPostExecute(Boolean result) {
-            if(result){
-                Toast.makeText(AudioRecorderActivity.this,"连接到服务器成功",Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(AudioRecorderActivity.this,"无法连接到服务器",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-
 
     /**
      *
@@ -453,7 +412,6 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
                     }
                 }
 
-                int count = 0;
                 DataOutputStream output = null;
                 try {
                     output = new DataOutputStream(new FileOutputStream(wavFile));
@@ -468,9 +426,6 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
                         bytes.putShort(s);
                     }
 
-                    publishProgress(new Integer(count));
-                    count++;
-
                     output.write(bytes.array());
                 } finally {
                     if (output != null) {
@@ -482,10 +437,6 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
                 return e.getMessage();
             }
             return null;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            statusTextView.setText("正在转换成WAV文件...");
         }
 
         // 点击停止录音后由UI线程执行
