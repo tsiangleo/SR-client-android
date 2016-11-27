@@ -11,8 +11,10 @@
         android:icon="@drawable/sr"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activity.HomeActivity">
+        android:theme="@style/AppTheme"
+        >
+
+        <activity android:name=".activity.HomeActivity" android:label="说话人识别">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,15 +22,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.RegistVoiceActivity"
+        <activity android:name=".activity.RegistVoiceActivity" android:label="注册声纹"
             android:parentActivityName=".activity.HomeActivity">
         </activity>
 
-        <activity android:name=".activity.VerifyVoiceActivity"
+        <activity android:name=".activity.VerifyVoiceActivity" android:label="验证声纹"
             android:parentActivityName=".activity.HomeActivity">
         </activity>
 
-        <activity android:name=".activity.SettingActivity"
+        <activity android:name=".activity.SettingActivity" android:label="系统设置"
             android:parentActivityName=".activity.HomeActivity">
         </activity>
 
