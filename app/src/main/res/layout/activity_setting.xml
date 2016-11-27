@@ -6,7 +6,7 @@ android:id="@+id/activity_main"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-tools:context="com.github.tsiangleo.sr.client.SettingActivity">
+tools:context="com.github.tsiangleo.sr.client.activity.SettingActivity">
 
 <TextView
     android:layout_margin="20px"
@@ -15,7 +15,7 @@ tools:context="com.github.tsiangleo.sr.client.SettingActivity">
     android:textSize="12pt"
     android:textColor="#030303"
     android:gravity="center"
-    android:text="欢迎使用说话人识别系统~"/>
+    android:text="服务器设置"/>
 
 <TableLayout
     android:layout_width="match_parent"
@@ -38,14 +38,13 @@ tools:context="com.github.tsiangleo.sr.client.SettingActivity">
             />
 
         <EditText
-            android:text="192.168.1.101"
-            android:hint="服务器地址"
+            android:hint="例如:192.168.1.101"
             android:textSize="8pt"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:inputType="text"
-            android:id="@+id/hostEditText" />
+            android:id="@+id/ipEditText" />
 
 
     </TableRow>
@@ -60,13 +59,12 @@ tools:context="com.github.tsiangleo.sr.client.SettingActivity">
             android:gravity="right"/>
 
         <EditText
-            android:text="8888"
-            android:hint="服务器端口号"
+            android:hint="例如:8080"
             android:textSize="8pt"
             android:layout_width="0dp"
-            android:inputType="number"
             android:layout_weight="3"
             android:id="@+id/portEditText"
+            android:inputType="number"
             android:layout_height="wrap_content" />
 
     </TableRow>
@@ -78,9 +76,9 @@ tools:context="com.github.tsiangleo.sr.client.SettingActivity">
     android:textColor="#FFFFFF"
     android:background="#1aad19"
     android:layout_margin="20px"
-    android:id="@+id/nextButton"
+    android:id="@+id/saveButton"
     android:textSize="8pt"
-    android:text="下一步"
+    android:text="保存"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 

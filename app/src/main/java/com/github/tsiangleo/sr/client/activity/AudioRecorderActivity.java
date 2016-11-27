@@ -1,7 +1,6 @@
-package com.github.tsiangleo.sr.client;
+package com.github.tsiangleo.sr.client.activity;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -14,10 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.tsiangleo.sr.client.R;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -39,6 +38,8 @@ import java.nio.ByteOrder;
  */
 
 public class AudioRecorderActivity  extends AppCompatActivity implements View.OnClickListener{
+    public static final String KEY_SERVER_IP = "com.github.tisnagleo.sr.server.ip";
+    public static final String KEY_SERVER_PORT = "com.github.tisnagleo.sr.server.port";
 
     private Button startButton,stopButton;
     private TextView statusTextView;
@@ -88,8 +89,8 @@ public class AudioRecorderActivity  extends AppCompatActivity implements View.On
         stopButton.setVisibility(View.GONE);
 
         Intent intent = getIntent();
-        host = intent.getStringExtra(SettingActivity.EXTRA_MESSAGE_HOST);
-        port = intent.getIntExtra(SettingActivity.EXTRA_MESSAGE_PORT,0);
+        host = intent.getStringExtra(KEY_SERVER_IP);
+        port = intent.getIntExtra(KEY_SERVER_PORT,0);
         Toast.makeText(this,"server address:"+host+":"+port,Toast.LENGTH_SHORT).show();
 
         File path = new File( Environment.getExternalStorageDirectory().getAbsolutePath()
