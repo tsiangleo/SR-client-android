@@ -9,18 +9,20 @@
     tools:context="com.github.tsiangleo.sr.client.activity.RegistVoiceActivity">
 
     <TextView
-        android:layout_margin="10px"
+        android:id="@+id/hintTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12pt"
-        android:textColor="#030303"
+        android:textSize="10pt"
+        android:textColor="#ffffff"
+        android:background="@drawable/bg"
         android:gravity="center"
-        android:text="注册声纹"/>
+        android:text="第一步（1/3）：点击下面的按钮开始录音吧，请尽量保持语速均匀~"/>
 
     <ImageView
+        android:layout_margin="20px"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="256px"
+        android:layout_height="256px"
         android:scaleType="fitCenter"
         android:src="@drawable/mic1"/>
 

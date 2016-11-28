@@ -1,72 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/activity_main"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-tools:context="com.github.tsiangleo.sr.client.activity.HomeActivity">
-
-<TextView
-    android:layout_margin="20px"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="12pt"
-    android:textColor="#030303"
-    android:gravity="center"
-    android:text="欢迎使用说话人识别系统~"/>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <Button
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12pt"
         android:textColor="#FFFFFF"
-        android:background="#1aad19"
-        android:layout_margin="20px"
-        android:id="@+id/settingButton"
-        android:textSize="8pt"
-        android:text="服务器设置"
+        android:gravity="center"
+        android:background="@drawable/bg"
+        android:text="欢迎使用说话人识别系统"/>
+
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <Button
-        android:textColor="#FFFFFF"
-        android:background="#1aad19"
-        android:layout_margin="20px"
-        android:id="@+id/registButton"
-        android:textSize="8pt"
-        android:text="注册声纹"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:textColor="#FFFFFF"
-        android:background="#1aad19"
-        android:layout_margin="20px"
-        android:id="@+id/verifyButton"
-        android:textSize="8pt"
-        android:text="验证声纹"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:textColor="#FFFFFF"
-        android:background="#1aad19"
-        android:layout_margin="20px"
-        android:id="@+id/clearButton"
-        android:textSize="8pt"
-        android:text="清除声纹"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:textColor="#FFFFFF"
-        android:background="#1aad19"
-        android:layout_margin="20px"
-        android:id="@+id/getModelButton"
-        android:textSize="8pt"
-        android:text="获取声纹模型"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
 
 
 </LinearLayout>

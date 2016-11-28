@@ -27,7 +27,7 @@ import java.io.IOException;
 public class RegistVoiceActivity extends BaseActivity implements View.OnClickListener{
 
     private Button startButton,stopButton;
-    private TextView statusTextView;
+    private TextView statusTextView,hintTextView;
     private ProgressDialog progressDialog;
 
     private File rawFile;
@@ -52,6 +52,8 @@ public class RegistVoiceActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_regist_voice);
 
         statusTextView = (TextView) findViewById(R.id.statusTextView);
+        hintTextView = (TextView) findViewById(R.id.hintTextView);
+
         startButton = (Button) findViewById(R.id.startButton);
         stopButton = (Button) findViewById(R.id.stopButton);
 
@@ -269,11 +271,25 @@ public class RegistVoiceActivity extends BaseActivity implements View.OnClickLis
                 statusTextView.setText("文件上传失败："+result);
                 startButton.setText("重新开始录音");
             }else {
-                statusTextView.setText("文件上传完成，文件是:"+getFilePath(wavFile));
+                statusTextView.setText("第"+currentRecordTimes+"次录音操作成功！");
+
+                //放置在第一步失败后就一直显示"重新开始录音".
+                startButton.setText("开始录音");
                 Toast.makeText(RegistVoiceActivity.this,"声纹注册成功！",Toast.LENGTH_LONG).show();
                 /* 录音成功后才自增.*/
                 currentRecordTimes++;
+                /* 设置hintTextView应该显示的提示文字*/
+                if(currentRecordTimes == 2){
+                    hintTextView.setText("第二步（2/3）：哎哟，不错哦！点击下面的按钮进行第二次录音吧，请尽量保持语速均匀~");
+                }
+                if(currentRecordTimes == 3){
+                    hintTextView.setText("第三步（3/3）：加油，还有最后一步啦！点击下面的按钮进行最后一次录音吧，请尽量保持语速均匀~");
+                }
+                if(currentRecordTimes == 4){
+                    hintTextView.setText("恭喜您！声纹注册成功！");
+                }
             }
+            // TODO: 2016/11/28  各个button的文字显示逻辑
             startButton.setEnabled(true);
             //关闭进度对话框
             progressDialog.dismiss();

@@ -1,85 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/activity_main"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-tools:context="com.github.tsiangleo.sr.client.activity.SettingActivity">
-
-<TextView
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_margin="20px"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="12pt"
-    android:textColor="#030303"
-    android:gravity="center"
-    android:text="服务器设置"/>
-
-<TableLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="20px"
-    android:layout_marginRight="20px"
-    android:layout_marginTop="50px"
-    android:layout_marginBottom="50px"
-    android:gravity="center"
     android:orientation="vertical">
 
-    <TableRow>
-        <TextView
-            android:text="服务器地址："
-            android:textSize="8pt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="right"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="8pt"
+        android:textColor="#000000"
+        android:text="声纹设置"/>
 
-        <EditText
-            android:hint="例如:192.168.1.101"
-            android:textSize="8pt"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:inputType="text"
-            android:id="@+id/ipEditText" />
+    <ListView
+        android:layout_marginTop="10px"
+        android:layout_marginBottom="10px"
+        android:background="@drawable/view_yuan_morelist"
+        android:id="@+id/voiceSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
+    <TextView
+        android:layout_marginTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="8pt"
+        android:textColor="#000000"
+        android:text="服务器设置"/>
 
-    </TableRow>
+    <ListView
+        android:layout_marginTop="10px"
+        android:layout_marginBottom="10px"
+        android:background="@drawable/view_yuan_morelist"
+        android:id="@+id/serverSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <TableRow>
-        <TextView
-            android:text="服务端口号："
-            android:textSize="8pt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="right"/>
-
-        <EditText
-            android:hint="例如:8080"
-            android:textSize="8pt"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:id="@+id/portEditText"
-            android:inputType="number"
-            android:layout_height="wrap_content" />
-
-    </TableRow>
-
-</TableLayout>
-
-
-<Button
-    android:textColor="#FFFFFF"
-    android:background="#1aad19"
-    android:layout_margin="20px"
-    android:id="@+id/saveButton"
-    android:textSize="8pt"
-    android:text="保存"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
 
 </LinearLayout>

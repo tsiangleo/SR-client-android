@@ -1,132 +1,152 @@
 package com.github.tsiangleo.sr.client.activity;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.github.tsiangleo.sr.client.R;
-import com.github.tsiangleo.sr.client.proto.SRClientRequest;
-import com.github.tsiangleo.sr.client.proto.SRServerResponse;
-import com.github.tsiangleo.sr.client.util.SysConfig;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by tsiang on 2016/11/23.
- *
+ * Created by tsiang on 2016/11/28.
  */
 
-public class SettingActivity extends BaseActivity implements View.OnClickListener{
+public class SettingActivity extends BaseActivity {
 
-    private EditText ipEditText;
-    private EditText portEditText;
-    private Button saveButton;
-    private ProgressDialog progressDialog;
-
-    private String host;
-    private int port;
+    private String[] voiceSettingTitles = new String[]{"采样频率设置","声道数设置"};
+    private String[] serverSettingTitles = new String[]{"服务器地址设置"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-
-        Toast.makeText(this,"SerialNumber:"+ SysConfig.getDeviceId(),Toast.LENGTH_SHORT).show();
-
-        ipEditText = (EditText) findViewById(R.id.ipEditText);
-        portEditText = (EditText) findViewById(R.id.portEditText);
-        saveButton = (Button) findViewById(R.id.saveButton);
-
-        saveButton.setOnClickListener(this);
-        saveButton.setOnTouchListener(this);
-
-        if(dataAccessService.getServerIP() != null){
-            ipEditText.setText(dataAccessService.getServerIP());
-        }
-        if(dataAccessService.getServerPort() > 0){
-            //注意：""
-            portEditText.setText(""+dataAccessService.getServerPort());
-        }
+        setVoiceListView();
+        setServerListView();
     }
 
+    private void setVoiceListView() {
+        SimpleAdapter voiceSettingAdapter = new SimpleAdapter(this,getVoiceSettingData(), R.layout.activity_setting_listview,
+                new String[]{"title"},
+                new int[]{R.id.title});
 
-    @Override
-    public void onClick(View v) {
-        if (v == saveButton){
-            if(ipEditText.getText().toString().isEmpty()){
-                Toast.makeText(this,"服务器地址不能为空",Toast.LENGTH_LONG).show();
-                return;
-            }
-            if(portEditText.getText().toString().isEmpty()){
-                Toast.makeText(this,"服务器端口号不能为空",Toast.LENGTH_LONG).show();
-                return;
-            }
-            new NetCheckTask().execute(ipEditText.getText().toString(),portEditText.getText().toString());
-            createProgressDialog();
-        }
-    }
-
-    private class NetCheckTask extends AsyncTask<String, Integer, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-            String h = params[0];
-            int p = Integer.parseInt(params[1]);
-
-            boolean isOk = true;
-
-            SRClientRequest req = new SRClientRequest();
-            req.setRequestId(UUID.randomUUID().toString());
-            req.setRequestType(SRClientRequest.REQUEST_TYPE_PING);
-            try {
-                Socket client = new Socket(h, p);
-                OutputStream outputStream = client.getOutputStream();
-                InputStream inputStream = client.getInputStream();
-                //发送请求
-                req.sendRequest(outputStream);
-                SRServerResponse response = SRServerResponse.readResponse(inputStream);
-                inputStream.close();
-                outputStream.close();
-                client.close();
-             }catch (Exception e){
-                isOk = false;
-            }finally {
-                if(isOk){
-                    host = h;
-                    port = p;
+        ListView voiceSetting = (ListView)findViewById(R.id.voiceSetting);
+        voiceSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0 ){
+                    gotoSetSapmleRate();
+                }else if(position == 1){
+                    gotoSetChannel();
                 }
             }
-            return isOk;
-        }
-
-        protected void onPostExecute(Boolean result) {
-            //关闭进度框
-            progressDialog.dismiss();
-            if (result) {
-                Toast.makeText(SettingActivity.this, "保存成功", Toast.LENGTH_LONG).show();
-                dataAccessService.saveServerAddr(host,port);
-                // TODO: 2016/11/26
-
-            } else {
-                Toast.makeText(SettingActivity.this, "无法ping通服务器，请输入正确的地址和端口号！", Toast.LENGTH_LONG).show();
-            }
-        }
+        });
+        voiceSetting.setAdapter(voiceSettingAdapter);
     }
 
-    private void createProgressDialog(){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("服务器设置");
-        progressDialog.setMessage("服务器连通性测试中...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+    private void setServerListView() {
+        SimpleAdapter voiceSettingAdapter = new SimpleAdapter(this,getServerSettingData(), R.layout.activity_setting_listview,
+                new String[]{"title"},
+                new int[]{R.id.title});
+
+        ListView serverSetting = (ListView)findViewById(R.id.serverSetting);
+        serverSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0 ){
+                    gotoServerSetting();
+                }
+
+            }
+        });
+        serverSetting.setAdapter(voiceSettingAdapter);
+    }
+
+    private List<Map<String, Object>> getVoiceSettingData() {
+        List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+        for(int i = 0;i<voiceSettingTitles.length;i++) {
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("title", voiceSettingTitles[i]);
+            listItems.add(item);
+        }
+        return listItems;
+    }
+
+    private List<Map<String, Object>> getServerSettingData() {
+        List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+        for(int i = 0;i<serverSettingTitles.length;i++) {
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("title", serverSettingTitles[i]);
+            listItems.add(item);
+        }
+        return listItems;
+    }
+
+    private void gotoServerSetting() {
+        // 将一个layout布局文件转为一个view对象。
+//        LayoutInflater inflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View view = inflater.inflate(R.layout.activity_server_setting, null);
+//
+//        new AlertDialog.Builder(this)
+//                .setTitle("服务器地址设置")
+//                .setIcon(android.R.drawable.ic_dialog_info)
+//                .setCancelable(false)
+//                .setView(view)
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                        dialog.dismiss();
+//                    }
+//                }).setNegativeButton("取消", null).create().show();
+
+
+        Intent intent = new Intent(this,ServerSettingActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoSetChannel() {
+        new AlertDialog.Builder(this)
+                .setTitle("请选择")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setSingleChoiceItems(new String[] {"单声道(Mono)","双声道(Stereo)"}, 0,
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }
+                )
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void gotoSetSapmleRate(){
+        new AlertDialog.Builder(this)
+                .setTitle("请选择")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setSingleChoiceItems(new String[] {"44100HZ","22050HZ","11025HZ","8000HZ"}, 0,
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }
+                )
+                .setNegativeButton("取消", null)
+                .show();
     }
 }
+
