@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.github.tsiangleo.sr.client.activity.RegistVoiceActivity">
+    tools:context="com.github.tsiangleo.sr.client.activity.VerifyVoiceActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
 
     <Button
         android:textColor="#FFFFFF"
-        android:background="#1aad19"
+        android:background="@drawable/view_yuan_button"
         android:layout_margin="20px"
         android:id="@+id/startButton"
         android:textSize="8pt"
@@ -48,7 +48,7 @@
 
     <Button
         android:textColor="#FFFFFF"
-        android:background="#1aad19"
+        android:background="@drawable/view_yuan_button"
         android:radius="1px"
         android:layout_margin="20px"
         android:id="@+id/stopButton"

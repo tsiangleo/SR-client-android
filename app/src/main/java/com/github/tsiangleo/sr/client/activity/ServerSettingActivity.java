@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.github.tsiangleo.sr.client.R;
 import com.github.tsiangleo.sr.client.proto.SRClientRequest;
 import com.github.tsiangleo.sr.client.proto.SRServerResponse;
-import com.github.tsiangleo.sr.client.util.SysConfig;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +25,7 @@ public class ServerSettingActivity extends BaseActivity implements View.OnClickL
 
     private EditText ipEditText;
     private EditText portEditText;
-    private Button saveButton;
+    private Button saveButton,cancelButton,connectButton;
     private ProgressDialog progressDialog;
 
     private String host;
@@ -37,14 +36,18 @@ public class ServerSettingActivity extends BaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server_setting);
 
-        Toast.makeText(this,"SerialNumber:"+ SysConfig.getDeviceId(),Toast.LENGTH_SHORT).show();
-
         ipEditText = (EditText) findViewById(R.id.ipEditText);
         portEditText = (EditText) findViewById(R.id.portEditText);
         saveButton = (Button) findViewById(R.id.saveButton);
+        cancelButton = (Button) findViewById(R.id.cancelButton);
+        connectButton = (Button) findViewById(R.id.connectButton);
 
         saveButton.setOnClickListener(this);
         saveButton.setOnTouchListener(this);
+        cancelButton.setOnClickListener(this);
+        cancelButton.setOnTouchListener(this);
+        connectButton.setOnClickListener(this);
+        connectButton.setOnTouchListener(this);
 
         if(dataAccessService.getServerIP() != null){
             ipEditText.setText(dataAccessService.getServerIP());
@@ -58,7 +61,7 @@ public class ServerSettingActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        if (v == saveButton){
+        if (v == connectButton){
             if(ipEditText.getText().toString().isEmpty()){
                 Toast.makeText(this,"服务器地址不能为空",Toast.LENGTH_LONG).show();
                 return;
@@ -69,6 +72,27 @@ public class ServerSettingActivity extends BaseActivity implements View.OnClickL
             }
             new NetCheckTask().execute(ipEditText.getText().toString(),portEditText.getText().toString());
             createProgressDialog();
+        }else if (v == saveButton){
+            if(ipEditText.getText().toString().isEmpty()){
+                Toast.makeText(this,"服务器地址不能为空",Toast.LENGTH_LONG).show();
+                return;
+            }
+            if(portEditText.getText().toString().isEmpty()){
+                Toast.makeText(this,"服务器端口号不能为空",Toast.LENGTH_LONG).show();
+                return;
+            }
+            if(host == null){
+                host = ipEditText.getText().toString();
+            }
+            if(port <= 0){
+                port = Integer.parseInt(portEditText.getText().toString());
+            }
+            dataAccessService.saveServerAddr(host,port);
+//            Toast.makeText(this, "保存成功", Toast.LENGTH_LONG).show();
+            showMsgAndCloseActivity("保存成功",this);
+
+        }else if (v == cancelButton){
+            this.finish();
         }
     }
 
@@ -110,22 +134,24 @@ public class ServerSettingActivity extends BaseActivity implements View.OnClickL
             //关闭进度框
             progressDialog.dismiss();
             if (result) {
-                Toast.makeText(ServerSettingActivity.this, "保存成功", Toast.LENGTH_LONG).show();
-                dataAccessService.saveServerAddr(host,port);
-                // TODO: 2016/11/26
+//                Toast.makeText(ServerSettingActivity.this, "连接成功", Toast.LENGTH_LONG).show();
+                showMsgAndCloseDialog("连接成功");
 
             } else {
-                Toast.makeText(ServerSettingActivity.this, "无法ping通服务器，请输入正确的地址和端口号！", Toast.LENGTH_LONG).show();
+//                Toast.makeText(ServerSettingActivity.this, "连接失败！", Toast.LENGTH_LONG).show();
+                showMsgAndCloseDialog("连接失败");
             }
         }
     }
 
     private void createProgressDialog(){
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("服务器设置");
-        progressDialog.setMessage("服务器连通性测试中...");
+        progressDialog.setTitle("连通性测试");
+        progressDialog.setMessage("正在连接服务器...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCancelable(true);
         progressDialog.show();
     }
+
+
 }

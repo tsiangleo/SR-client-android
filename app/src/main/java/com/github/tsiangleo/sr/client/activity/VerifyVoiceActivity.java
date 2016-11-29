@@ -1,9 +1,6 @@
 package com.github.tsiangleo.sr.client.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,7 +69,6 @@ public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickLi
             rawFile = File.createTempFile(fileNamePrefix, ".pcm",getFilesDir());
             wavFile = File.createTempFile(fileNamePrefix, ".wav",getFilesDir());
         } catch (IOException e) {
-            Toast.makeText(this,"内部存储：文件创建异常："+e.getMessage(),Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
@@ -85,16 +81,13 @@ public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickLi
                     rawFile = File.createTempFile(fileNamePrefix, ".pcm", path);
                     wavFile = File.createTempFile(fileNamePrefix, ".wav", path);
                 } catch (IOException e) {
-                    Toast.makeText(this,"SD卡：文件创建异常："+e.getMessage(),Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
         }
 
         if(rawFile == null || wavFile == null){
-            Toast.makeText(this,"无法创建临时文件，请先确保应用具有相应的授权，再使用！",Toast.LENGTH_SHORT).show();
-            //调到首页
-            startActivity(new Intent(this,HomeActivity.class));
+            showMsgAndCloseActivity("无法创建临时文件，请先确保应用具有相应的授权，再使用！",this);
         }
     }
 
@@ -173,17 +166,7 @@ public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickLi
                 // 可以播放了、可以上传了,以下两个任务可以同时执行
                 convert();
             }else {
-               new AlertDialog.Builder(VerifyVoiceActivity.this)
-                       .setTitle("消息提示")
-                       .setMessage(result)
-                       .setCancelable(false)
-                       .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //结束当前Activity
-                        VerifyVoiceActivity.this.finish();
-                    }
-                }).create().show();
+                showMsgAndCloseActivity(result,VerifyVoiceActivity.this);
             }
         }
 
@@ -223,7 +206,8 @@ public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickLi
                 startButton.setText("重新开始录音");
             }else {
                 statusTextView.setText("文件上传完成，文件是:"+getFilePath(wavFile));
-                Toast.makeText(VerifyVoiceActivity.this,"声纹验证成功！",Toast.LENGTH_LONG).show();
+//                Toast.makeText(VerifyVoiceActivity.this,"声纹验证成功！",Toast.LENGTH_LONG).show();
+                showMsgAndCloseDialog("声纹验证成功！");
                 /* 录音成功后才自增.*/
                 currentRecordTimes++;
             }

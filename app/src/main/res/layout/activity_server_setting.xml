@@ -8,22 +8,20 @@
     android:orientation="vertical"
     tools:context="com.github.tsiangleo.sr.client.activity.ServerSettingActivity">
 
+
     <TextView
-        android:layout_margin="20px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12pt"
-        android:textColor="#030303"
+        android:textColor="#FFFFFF"
         android:gravity="center"
-        android:text="服务器设置"/>
+        android:background="@drawable/bg"
+        android:text="服务器地址设置"/>
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20px"
-        android:layout_marginRight="20px"
-        android:layout_marginTop="50px"
-        android:layout_marginBottom="50px"
+        android:layout_margin="20px"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -31,10 +29,8 @@
             <TextView
                 android:text="服务器地址："
                 android:textSize="8pt"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:gravity="right"
                 />
 
             <EditText
@@ -53,10 +49,8 @@
             <TextView
                 android:text="服务端口号："
                 android:textSize="8pt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:gravity="right"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <EditText
                 android:hint="例如:8080"
@@ -67,19 +61,51 @@
                 android:inputType="number"
                 android:layout_height="wrap_content" />
 
+            <Button
+
+                android:textColor="#FFFFFF"
+                android:background="@drawable/view_yuan_button"
+                android:id="@+id/connectButton"
+                android:textSize="8pt"
+                android:text="测试连通性"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/view_yuan_button"
+                android:id="@+id/saveButton"
+                android:layout_marginTop="20px"
+                android:layout_marginRight="10px"
+                android:textSize="8pt"
+                android:text="保存"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:background="@drawable/view_yuan_button"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+
+                android:layout_marginTop="20px"
+                android:layout_marginLeft="10px"
+                android:id="@+id/cancelButton"
+                android:textSize="8pt"
+                android:text="取消"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </TableRow>
 
     </TableLayout>
 
 
-    <Button
-        android:textColor="#FFFFFF"
-        android:background="#1aad19"
-        android:layout_margin="20px"
-        android:id="@+id/saveButton"
-        android:textSize="8pt"
-        android:text="保存"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

@@ -1,9 +1,6 @@
 package com.github.tsiangleo.sr.client.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -75,7 +72,7 @@ public class RegistVoiceActivity extends BaseActivity implements View.OnClickLis
             rawFile = File.createTempFile(fileNamePrefix, ".pcm",getFilesDir());
             wavFile = File.createTempFile(fileNamePrefix, ".wav",getFilesDir());
         } catch (IOException e) {
-            Toast.makeText(this,"内部存储：文件创建异常："+e.getMessage(),Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this,"内部存储：文件创建异常："+e.getMessage(),Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
@@ -88,16 +85,14 @@ public class RegistVoiceActivity extends BaseActivity implements View.OnClickLis
                     rawFile = File.createTempFile(fileNamePrefix, ".pcm", path);
                     wavFile = File.createTempFile(fileNamePrefix, ".wav", path);
                 } catch (IOException e) {
-                    Toast.makeText(this,"SD卡：文件创建异常："+e.getMessage(),Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this,"SD卡：文件创建异常："+e.getMessage(),Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
         }
 
         if(rawFile == null || wavFile == null){
-            Toast.makeText(this,"无法创建临时文件，请先确保应用具有相应的授权，再使用！",Toast.LENGTH_SHORT).show();
-            //调到首页
-            startActivity(new Intent(this,HomeActivity.class));
+            showMsgAndCloseActivity("无法创建临时文件，请先确保应用具有相应的授权，再使用！",this);
         }
     }
 
@@ -183,23 +178,7 @@ public class RegistVoiceActivity extends BaseActivity implements View.OnClickLis
                 convert();
                 play();
             }else {
-//                statusTextView.setText("录音出错:"+result);
-//                Toast.makeText(RegistVoiceActivity.this,"录音出错:"+result,Toast.LENGTH_LONG).show();
-                //调到首页
-//                startActivity(new Intent(RegistVoiceActivity.this,HomeActivity.class));
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(RegistVoiceActivity.this);
-                builder.setTitle("消息提示");
-                builder.setMessage(result);
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //结束当前Activity
-                        RegistVoiceActivity.this.finish();
-                    }
-                });
-                builder.setCancelable(false);
-                builder.create().show();
+                showMsgAndCloseActivity(result,RegistVoiceActivity.this);
             }
         }
 

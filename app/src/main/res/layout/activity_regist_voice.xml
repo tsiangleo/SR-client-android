@@ -39,7 +39,7 @@
 
     <Button
         android:textColor="#FFFFFF"
-        android:background="#1aad19"
+        android:background="@drawable/view_yuan_button"
         android:layout_margin="20px"
         android:id="@+id/startButton"
         android:textSize="8pt"
@@ -49,7 +49,7 @@
 
     <Button
         android:textColor="#FFFFFF"
-        android:background="#1aad19"
+        android:background="@drawable/view_yuan_button"
         android:radius="1px"
         android:layout_margin="20px"
         android:id="@+id/stopButton"
