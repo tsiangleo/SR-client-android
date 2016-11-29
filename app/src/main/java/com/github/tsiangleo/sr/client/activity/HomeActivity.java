@@ -44,7 +44,7 @@ public class HomeActivity extends BaseActivity {
                     gotoVerify();
                 }else if(position == 2){
                     gotoSetting();
-                }else if(position == 2){
+                }else if(position == 3){
                     gotoAppLock();
                 }
 
@@ -81,6 +81,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void gotoAppLock(){
-        // TODO: 2016/11/28  
+        Intent intent = new Intent(this,AppListActivity.class);
+        startActivity(intent);
     }
 }
