@@ -2,13 +2,15 @@ package com.github.tsiangleo.sr.client.business;
 
 import android.content.SharedPreferences;
 
+
 /**
  * 数据访问的业务对象
  * Created by tsiang on 2016/11/26.
  */
 public class DataAccessService {
-    public static final String KEY_SERVER_IP = "com.github.tisnagleo.sr.server.ip";
-    public static final String KEY_SERVER_PORT = "com.github.tisnagleo.sr.server.port";
+    public static final String KEY_SERVER_IP    = "com.github.tsiangleo.sr.server.ip";
+    public static final String KEY_SERVER_PORT  = "com.github.tsiangleo.sr.server.port";
+    public static final String KEY_PWD          = "com.github.tsiangleo.sr.pwd";
 
     private SharedPreferences  preferences;
     private SharedPreferences.Editor editor;
@@ -45,4 +47,19 @@ public class DataAccessService {
     }
 
 
+    /**
+     * 保存密码
+     * @param pwd
+     */
+    public void savePwd(String pwd) {
+        editor.putString(KEY_PWD,pwd);
+        editor.commit();
+    }
+
+    /**
+     * 获取密码
+     */
+    public String getPwd() {
+        return preferences.getString(KEY_PWD,null);
+    }
 }

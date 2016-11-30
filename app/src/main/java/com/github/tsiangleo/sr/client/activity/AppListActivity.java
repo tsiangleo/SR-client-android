@@ -93,8 +93,7 @@ public class AppListActivity extends TabActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 //更新list
                                 unlockDataList.add(lockDataList.get(position));
-                                appLockService.removeFromLockList((String)lockDataList.get(position).get("appPackageName"),
-                                        (String)lockDataList.get(position).get("appName"));
+                                appLockService.removeFromLockList((String)lockDataList.get(position).get("appPackageName"));
                                 lockDataList.remove(position);
 
                                 Toast.makeText(AppListActivity.this,"已加锁："+lockDataList.size()+"，未加锁："+unlockDataList.size()
@@ -131,8 +130,7 @@ public class AppListActivity extends TabActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 //更新list
                                 lockDataList.add(unlockDataList.get(position));
-                                appLockService.addIntoLockList((String)unlockDataList.get(position).get("appPackageName"),
-                                        (String)unlockDataList.get(position).get("appName"));
+                                appLockService.addIntoLockList((String)unlockDataList.get(position).get("appPackageName"));
                                 unlockDataList.remove(position);
 
                                 Toast.makeText(AppListActivity.this,"已加锁："+lockDataList.size()+"，未加锁："+unlockDataList.size()

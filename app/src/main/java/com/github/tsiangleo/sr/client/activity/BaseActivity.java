@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import com.github.tsiangleo.sr.client.R;
 import com.github.tsiangleo.sr.client.business.DataAccessService;
+import com.github.tsiangleo.sr.client.util.ServiceAliveUtil;
 
 /**
  * Created by tsiang on 2016/11/26.
@@ -88,5 +89,8 @@ public class BaseActivity extends AppCompatActivity implements View.OnTouchListe
                     }
                 }).create().show();
     }
+    protected boolean isWatchDogServiceRunning(){
 
+        return ServiceAliveUtil.isServiceRunning(this,"com.github.tsiangleo.sr.client.service.WatchDogService");
+    }
 }

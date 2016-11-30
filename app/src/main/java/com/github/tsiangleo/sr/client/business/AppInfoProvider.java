@@ -77,32 +77,32 @@ public class AppInfoProvider
 
 
     /**
-     * 根据appFullName返回对应的AppInfo对象。appFullName由AppPackageName+"#"+appName组成。
-     * @param appFullName
+     * 根据packageName返回对应的AppInfo对象。
+     * @param packageName
      * @return 不存在则返回null。
      */
-    public AppInfo getAppInfo(String appFullName) {
+    public AppInfo getAppInfo(String packageName) {
 
         if(cache == null){
-            return loadData(appFullName);
+            return loadData(packageName);
         }
 
-        if(cache != null && cache.containsKey(appFullName)){
-            return cache.get(appFullName);
+        if(cache != null && cache.containsKey(packageName)){
+            return cache.get(packageName);
         }else{
             return  null;
         }
     }
 
-    private AppInfo loadData(String appFullName) {
+    private AppInfo loadData(String packageName) {
         AppInfo result = null;
         cache = new HashMap<>();
         List<AppInfo> appInfoList =  getAllAppInfo();
         if(appInfoList != null){
             for(AppInfo app:appInfoList){
-                String key = app.getPackageName()+"#"+app.getAppName();
+                String key = app.getPackageName();
                 cache.put(key,app);
-                if(key.equals(appFullName)){
+                if(key.equals(packageName)){
                     result = app;
                 }
             }

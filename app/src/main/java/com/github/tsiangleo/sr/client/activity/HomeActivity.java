@@ -1,13 +1,23 @@
 package com.github.tsiangleo.sr.client.activity;
 
+import android.app.AlertDialog;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.github.tsiangleo.sr.client.R;
+import com.github.tsiangleo.sr.client.service.WatchDogService;
+import com.github.tsiangleo.sr.client.util.ServiceAliveUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +33,38 @@ public class HomeActivity extends BaseActivity {
     private int[] imageIds = new int[]{R.drawable.regist,R.drawable.verify,R.drawable.setting,R.drawable.lock};
     private String[] titles = new String[]{"注册声纹","验证声纹","系统设置","应用锁"};
     private int arrowId = R.drawable.arrow;
+
+    private void requestPromission() {
+        new AlertDialog.Builder(this).
+                setTitle("设置").
+                setMessage("开启usagestats权限")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                        startActivity(intent);
+                        //finish();
+                    }
+                }).show();
+    }
+
+    private boolean hasPackageUsageStatsPermission(){
+        if (Build.VERSION.SDK_INT > 20) {
+            long ts = System.currentTimeMillis();
+            UsageStatsManager usageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+            List queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, ts - 2000, ts);
+            if(queryUsageStats == null || queryUsageStats.isEmpty()){
+               return false;
+            }
+            return true;
+        }
+        return true;
+    }
+    private void checkPermission(){
+        if(!hasPackageUsageStatsPermission()){
+            requestPromission();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +93,9 @@ public class HomeActivity extends BaseActivity {
             }
         });
         listView.setAdapter(adapter);
+
+        //启动授权页面，需要用户授权
+        checkPermission();
     }
 
     private List<Map<String, Object>> getData() {

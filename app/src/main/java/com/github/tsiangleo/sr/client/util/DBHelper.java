@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        db.execSQL("create table applocklist (_id integer primary key autoincrement, appfullname varchar(256))");
+        db.execSQL("create table applocklist (_id integer primary key autoincrement, packagename varchar(256))");
     }
 
     @Override

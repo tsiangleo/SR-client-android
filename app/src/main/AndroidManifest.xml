@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.tsiangleo.sr.client">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+
 
     <application
         android:allowBackup="true"
@@ -13,8 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         >
-
-        <activity android:name=".activity.HomeActivity" android:label="说话人识别">
+        <!--
+        <activity android:name=".activity.MainActivity"
+            android:launchMode="singleInstance"
+            android:label="@string/app_name"/>
+         -->
+        <activity android:name=".activity.HomeActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,6 +50,17 @@
         <activity android:name=".activity.ServerSettingActivity" android:label="服务器设置"
             android:parentActivityName=".activity.SettingActivity">
         </activity>
+
+        <activity android:name=".activity.PwdSettingActivity" android:label="密码设置"
+            android:parentActivityName=".activity.SettingActivity">
+        </activity>
+
+        <activity android:name=".activity.EnterPwdActivity"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"/>
+
+        <service android:name=".service.WatchDogService" />
+
 
     </application>
 

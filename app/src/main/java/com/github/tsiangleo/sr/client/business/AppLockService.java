@@ -49,20 +49,18 @@ public class AppLockService {
     }
 
     /**
-     * 将packageName和appName标志的一个应用加入到加锁列表中。
+     * 将packageName标志的一个应用加入到加锁列表中。
      * @param packageName
-     * @param appName
      */
-    public void addIntoLockList(String packageName,String appName){
-        appLockDao.insert(packageName+"#"+appName);
+    public void addIntoLockList(String packageName){
+        appLockDao.insert(packageName);
     }
 
     /**
-     * 将packageName和appName标志的一个应用从加锁列表中移除。
+     * 将packageName标志的一个应用从加锁列表中移除。
      * @param packageName
-     * @param appName
      */
-    public void removeFromLockList(String packageName,String appName){
-        appLockDao.delete(packageName+"#"+appName);
+    public void removeFromLockList(String packageName){
+        appLockDao.delete(packageName);
     }
 }
