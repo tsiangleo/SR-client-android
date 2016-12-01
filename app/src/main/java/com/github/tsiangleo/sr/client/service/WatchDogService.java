@@ -2,6 +2,8 @@ package com.github.tsiangleo.sr.client.service;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
@@ -12,9 +14,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.github.tsiangleo.sr.client.R;
 import com.github.tsiangleo.sr.client.activity.EnterPwdActivity;
+import com.github.tsiangleo.sr.client.activity.SettingActivity;
 import com.github.tsiangleo.sr.client.dao.AppLockDao;
 
 import java.util.HashSet;
@@ -55,6 +60,14 @@ public class WatchDogService extends IntentService {
         filter.addAction(SR_STOP_LOCK_SERVICE_ACTION);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(receiver, filter);
+
+        runInForeground();
+    }
+
+    @Override
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        super.onStart(intent, startId);
+        return START_STICKY;
     }
 
     @Override
@@ -64,6 +77,7 @@ public class WatchDogService extends IntentService {
             unregisterReceiver(receiver);
             receiver = null;
         }
+        stopForeground(true);
     }
 
     private void showMsg(final String msg){
@@ -153,5 +167,20 @@ public class WatchDogService extends IntentService {
             }
             return null;
         }
+    }
+
+    private void runInForeground(){
+        Intent notificationIntent = new Intent(this, SettingActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification = new Notification.Builder(this)
+                .setTicker("正在开启应用锁")
+                .setContentTitle("应用锁已开启")
+                .setContentText("正在保护您的应用")
+                .setSmallIcon(R.drawable.sr)
+                .setOngoing(true)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(524, notification);
     }
 }

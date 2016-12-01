@@ -126,7 +126,77 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void gotoAppLock(){
-        Intent intent = new Intent(this,AppListActivity.class);
-        startActivity(intent);
+        checkBeforeGotoAppLock();
+//        Intent intent = new Intent(this,AppListActivity.class);
+//        startActivity(intent);
+    }
+
+    public final static int ACTIVITY_REQUEST_CODE_PWD_SETTING = 1;
+    public final static int ACTIVITY_REQUEST_CODE_ENTER_PWD = 2;
+    public final static int ACTIVITY_REQUEST_CODE_VERIFY_VOICE = 3;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ACTIVITY_REQUEST_CODE_PWD_SETTING :
+               if(resultCode == RESULT_OK){
+                    startActivity(new Intent(this,AppListActivity.class));
+               }
+                break;
+            case ACTIVITY_REQUEST_CODE_ENTER_PWD :
+                if(resultCode == RESULT_OK){
+                    startActivity(new Intent(this,AppListActivity.class));
+                }
+                break;
+            case ACTIVITY_REQUEST_CODE_VERIFY_VOICE :
+                if(resultCode == RESULT_OK){
+                    startActivity(new Intent(this,AppListActivity.class));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void checkBeforeGotoAppLock(){
+        //用户还未设置密码
+        if(dataAccessService.getPwd() == null){
+            new AlertDialog.Builder(this)
+                    .setTitle("消息提示")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setMessage("还没设置密码哦，先去设置密码吧！")
+                    .setCancelable(true)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(HomeActivity.this,PwdSettingActivity.class);
+                            intent.putExtra(PwdSettingActivity.EXTRA_MESSAGE_RET_RESULT,true);
+                            startActivityForResult(intent ,ACTIVITY_REQUEST_CODE_PWD_SETTING);
+                            dialog.dismiss();
+                        }
+                    }).create().show();
+        }
+        else{ //用户核身
+            new AlertDialog.Builder(this)
+                    .setTitle("系统需要验证您的身份")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setMessage("请选择验证方式")
+                    .setCancelable(true)
+                    .setPositiveButton("声纹验证", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(HomeActivity.this,VerifyVoiceActivity.class);
+                            intent.putExtra(VerifyVoiceActivity.EXTRA_MESSAGE_RET_RESULT,true);
+                            startActivityForResult(intent ,ACTIVITY_REQUEST_CODE_VERIFY_VOICE);
+                        }
+                    }).setNegativeButton("密码验证", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(HomeActivity.this,EnterPwdActivity.class);
+                            intent.putExtra(EnterPwdActivity.EXTRA_MESSAGE_RET_RESULT,true);
+                            startActivityForResult(intent ,ACTIVITY_REQUEST_CODE_ENTER_PWD);
+                        }
+                    }).create().show();
+        }
     }
 }

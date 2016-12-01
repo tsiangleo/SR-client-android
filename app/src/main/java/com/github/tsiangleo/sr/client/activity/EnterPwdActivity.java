@@ -17,9 +17,13 @@ import com.github.tsiangleo.sr.client.service.WatchDogService;
  */
 
 public class EnterPwdActivity extends BaseActivity {
+    public static final String EXTRA_MESSAGE_RET_RESULT  = "com.github.tsiangleo.sr.EnterPwdActivity.EXTRA_MESSAGE_RET_RESULT";
+
     private EditText etPwd;
     private Button button;
     private String packageName;
+
+    private boolean needReturnResult;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,14 +58,23 @@ public class EnterPwdActivity extends BaseActivity {
                     Intent intent = new Intent(WatchDogService.SR_UNCHECKED_ACTION);
                     intent.putExtra("packageName", packageName);
                     sendBroadcast(intent);
+                    if(needReturnResult){
+                        setResult(RESULT_OK, new Intent());
+                    }
                     finish();
                 } else {
                     Toast.makeText(EnterPwdActivity.this, "密码不对", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
 
+        getDataFromIntent();
+    }
+    private void getDataFromIntent() {
+        // Get the message from the intent
+        Intent intent = getIntent();
+        needReturnResult = intent.getBooleanExtra(EXTRA_MESSAGE_RET_RESULT,false);
+    }
     @Override
     public void onBackPressed() {
         /*

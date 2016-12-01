@@ -127,7 +127,11 @@ public class SettingActivity extends BaseActivity {
     private List<Map<String, Object>> getPwdSettingData() {
         List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
         Map<String, Object> item = new HashMap<String, Object>();
-        item.put("title", "密码设置");
+        if(dataAccessService.getPwd() == null){
+            item.put("title", "创建密码");
+        }else{
+            item.put("title", "修改密码");
+        }
         listItems.add(item);
         return listItems;
     }
@@ -156,6 +160,11 @@ public class SettingActivity extends BaseActivity {
     }
     private void gotoPwdSetting(){
         Intent intent = new Intent(this,PwdSettingActivity.class);
+        if(dataAccessService.getPwd() == null){
+            intent.putExtra(PwdSettingActivity.EXTRA_MESSAGE_CREATE_NEW_PWD,true);
+        }else{
+            intent.putExtra(PwdSettingActivity.EXTRA_MESSAGE_CREATE_NEW_PWD,false);
+        }
         startActivity(intent);
     }
     private void gotoSetChannel() {
@@ -207,7 +216,7 @@ public class SettingActivity extends BaseActivity {
 
         private void initData(){
             Map<String,Object> map = new HashMap<>();
-            map.put("appLockSettingTitle","开启应用锁服务");
+            map.put("appLockSettingTitle","开启应用锁");
             mData.add(map);
         }
 
@@ -261,6 +270,10 @@ public class SettingActivity extends BaseActivity {
     private void openApplockService(){
         if(!isWatchDogServiceRunning()){
             Intent intent = new Intent(this, WatchDogService.class);
+            /*
+            Every call to this method will result in a corresponding call to
+            the target service's onStartCommand() method,with the intent given here.
+             */
             startService(intent);
 //            Toast.makeText(this,"start Service",Toast.LENGTH_SHORT).show();
         }

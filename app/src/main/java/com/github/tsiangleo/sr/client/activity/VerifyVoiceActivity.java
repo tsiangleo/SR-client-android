@@ -1,6 +1,7 @@
 package com.github.tsiangleo.sr.client.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +23,7 @@ import java.io.IOException;
  */
 
 public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickListener{
+    public static final String EXTRA_MESSAGE_RET_RESULT  = "com.github.tsiangleo.sr.VerifyVoiceActivity.EXTRA_MESSAGE_RET_RESULT";
 
     private Button startButton,stopButton;
     private TextView statusTextView;
@@ -42,6 +44,8 @@ public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickLi
      * */
     private int currentRecordTimes = 1;
 
+    private boolean needReturnResult;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +64,12 @@ public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickLi
         stopButton.setVisibility(View.GONE);
 
         netService = new NetService(dataAccessService.getServerIP(),dataAccessService.getServerPort());
-
+        getDataFromIntent();
+    }
+    private void getDataFromIntent() {
+        // Get the message from the intent
+        Intent intent = getIntent();
+        needReturnResult = intent.getBooleanExtra(EXTRA_MESSAGE_RET_RESULT,false);
     }
 
     private void initFile(String fileNamePrefix) {
@@ -210,6 +219,12 @@ public class VerifyVoiceActivity  extends BaseActivity implements View.OnClickLi
                 showMsgAndCloseDialog("声纹验证成功！");
                 /* 录音成功后才自增.*/
                 currentRecordTimes++;
+
+                //需要返回数据
+                if(needReturnResult){
+                    VerifyVoiceActivity.this.setResult(RESULT_OK, new Intent());
+                    VerifyVoiceActivity.this.finish();
+                }
             }
             startButton.setEnabled(true);
             //关闭进度对话框

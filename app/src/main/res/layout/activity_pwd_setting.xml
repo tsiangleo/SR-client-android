@@ -10,13 +10,13 @@
 
 
     <TextView
+        android:id="@+id/showTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12pt"
         android:textColor="#FFFFFF"
         android:gravity="center"
-        android:background="@drawable/bg"
-        android:text="密码设置"/>
+        android:background="@drawable/bg"/>
 
     <TableLayout
         android:layout_width="match_parent"
@@ -24,6 +24,23 @@
         android:layout_margin="20px"
         android:gravity="center"
         android:orientation="vertical">
+
+        <TableRow android:id="@+id/oldPwdTableRow">
+            <TextView
+                android:text="原始密码："
+                android:textSize="8pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <EditText
+                android:textSize="8pt"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:inputType="textPassword"
+                android:id="@+id/oldPwdEditText" />
+        </TableRow>
 
         <TableRow>
             <TextView
@@ -61,19 +78,18 @@
 
         </TableRow>
 
-        <Button
-            android:textColor="#FFFFFF"
-            android:background="@drawable/view_yuan_button"
-            android:id="@+id/savePwdButton"
-            android:layout_marginTop="20px"
-            android:layout_marginRight="10px"
-            android:textSize="8pt"
-            android:text="保存"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+
     </TableLayout>
 
-
+    <Button
+        android:textColor="#FFFFFF"
+        android:background="@drawable/view_yuan_button"
+        android:id="@+id/savePwdButton"
+        android:layout_margin="20px"
+        android:textSize="8pt"
+        android:text="保存"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

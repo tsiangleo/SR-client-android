@@ -25,8 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:showText="true"
-            android:textOff="服务关闭中"
-            android:textOn="服务开启中" />
+            android:textOff="已关闭"
+            android:textOn="已开启" />
 
     </LinearLayout>
 
